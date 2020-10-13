@@ -2,6 +2,25 @@
 
 set -eu
 
+proton_dir="$(pwd)"
+
+# Account for if a build failed so we try again from scratch.
+if [ ! -d "broton_mingw" ] || [ -d "broton_mingw_build" ]
+then
+  echo "✗ - MinGW"
+  rm -rf "broton_mingw" || true
+  rm -rf "broton_mingw_build" || true
+  mkdir -p "broton_mingw_build"
+  mkdir -p "broton_mingw"
+  pushd broton_mingw_build
+    ../build-mingw-w64.sh "$proton_dir/broton_mingw"
+  popd
+  rm -rf broton_mingw_build
+fi
+# Add the built MinGW to our path for future building...
+export PATH="$PATH:$proton_dir/broton_mingw"
+echo "✓ - MinGW"
+
 if [ ! -d "broton_build" ]
 then
   echo "✗ - Configure"
@@ -13,6 +32,6 @@ fi
 echo "✓ - Configure"
 
 pushd broton_build
-  make
+  make -j1
 popd
 echo "✓ - Make"
