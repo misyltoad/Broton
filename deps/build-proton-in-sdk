@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -eu
+
+./configure.sh --no-steam-runtime
+make -j$(nproc)

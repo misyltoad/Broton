@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eu
+
+pushd build/proton
+  ../steam_runtime/run-in-soldier-sdk -- ../../deps/build-proton-in-sdk
+popd

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eu
+
+deps/setup-steam-runtime
+deps/clone-proton
+deps/build-proton

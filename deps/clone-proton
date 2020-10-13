@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -eu
+
+if [ ! -d "build/proton" ]
+then
+  echo "✗ - Proton Git"
+  mkdir -p build/proton
+  pushd build/proton
+    git clone -b proton_5.0 --recursive https://github.com/ValveSoftware/Proton .
+  popd
+else
+  echo "Pulling Proton git repo..."
+  pushd build/proton
+    git pull -ff-only
+  popd
+fi
+echo "✓ - Proton Git"

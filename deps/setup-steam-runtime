@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -eu
+
+mkdir -p build
+mkdir -p build/steam_runtime
+
+if [ ! -d "build/steam_runtime/pressure-vessel" ]
+then
+  echo "✗ - Pressure Vessel"
+  rm -rf tmp || true
+  mkdir -p tmp
+  pushd tmp
+    curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxf -
+    chmod +x steamcmd.sh
+    echo "Please enter Steam credentials to download pressure-vessel from the Steam Linux Runtime."
+    read -p "Steam Username: " steam_username
+    read -sp "Password: " steam_password
+    ./steamcmd.sh +login "$steam_username" "$steam_password" +force_install_dir steam_runtime_soldier +app_update 1391110 +quit
+    unset steam_username
+    unset steam_password
+  popd
+
+  cp -r tmp/steam_runtime_soldier/pressure-vessel build/steam_runtime/pressure-vessel
+  cp tmp/steam_runtime_soldier/deploy-runtime build/steam_runtime/deploy-runtime
+  cp tmp/steam_runtime_soldier/run-in-steamrt build/steam_runtime/run-in-steamrt
+  rm -rf tmp
+fi
+echo "✓ - Pressure Vessel"
+
+if [ ! -f "build/steam_runtime/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-soldier-runtime.tar.gz" ] || [ ! -f "build/steam_runtime/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-soldier-buildid.txt" ]
+then
+  echo "✗ - Steam Runtime - Soldier SDK"
+  pushd build/steam_runtime
+  rm -rf "com.valvesoftware.SteamRuntime.Sdk-amd64,i386-soldier-runtime.tar.gz" || true
+  rm -rf "com.valvesoftware.SteamRuntime.Sdk-amd64,i386-soldier-buildid.txt" || true
+
+  curl -s -o "com.valvesoftware.SteamRuntime.Sdk-amd64,i386-soldier-runtime.tar.gz" "https://repo.steampowered.com/steamrt-images-soldier/snapshots/latest-container-runtime-depot/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-soldier-runtime.tar.gz"
+  curl -s -o "com.valvesoftware.SteamRuntime.Sdk-amd64,i386-soldier-buildid.txt" "https://repo.steampowered.com/steamrt-images-soldier/snapshots/latest-container-runtime-depot/BUILD_ID.txt"
+  popd
+fi
+echo "✓ - Steam Runtime - Soldier SDK"
+
+if [ ! -f "build/steam_runtime/run-in-soldier-sdk" ]
+then
+  echo "✗ - Soldier SDK Helper Script"
+  cp deps/run-in-soldier-sdk build/steam_runtime
+fi
+echo "✓ - Soldier SDK Helper Script"

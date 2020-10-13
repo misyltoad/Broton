@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -eu
+
+me="$(readlink -f "$0")"
+here="${me%/*}"
+me="${me##*/}"
+
+exec "$here/run-in-steamrt" \
+    --arch=amd64,i386 \
+    --deploy \
+    --runtime=com.valvesoftware.SteamRuntime.Sdk \
+    --suite=soldier \
+    soldier \
+    -- \
+    "$@"
