@@ -12,7 +12,7 @@ then
 else
   echo "Pulling Proton git repo..."
   pushd build/proton
-    git pull -ff-only
+    git pull --ff-only
   popd
 fi
 echo "✓ - Proton Git"
