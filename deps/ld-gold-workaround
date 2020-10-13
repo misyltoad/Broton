@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -eu
+
+# For some reason normal ld just flat out doesn't work.
+# Replace it with ld.gold which is next to it, cause this one works.
+
+if [ ! -f "build/steam_runtime/soldier/files/bin/x86_64-linux-gnu-ld.old" ]
+then
+  echo "✗ - ld.gold hack"
+  # Make sure pressure-vessel is initialized
+  build/steam_runtime/run-in-soldier-sdk -- echo "Initialized Pressure Vessel"
+
+  echo "Applying ld.gold hack... Replacing ld with ld.gold"
+  mv build/steam_runtime/soldier/files/bin/x86_64-linux-gnu-ld build/steam_runtime/soldier/files/bin/x86_64-linux-gnu-ld.old
+  cp build/steam_runtime/soldier/files/bin/x86_64-linux-gnu-ld.gold build/steam_runtime/soldier/files/bin/x86_64-linux-gnu-ld
+
+  mv build/steam_runtime/soldier/files/bin/i686-linux-gnu-ld build/steam_runtime/soldier/files/bin/i686-linux-gnu-ld.old
+  cp build/steam_runtime/soldier/files/bin/i686-linux-gnu-ld.gold build/steam_runtime/soldier/files/bin/i686-linux-gnu-ld
+fi
+echo "✓ - ld.gold hack"

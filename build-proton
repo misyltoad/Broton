@@ -4,4 +4,6 @@ set -eu
 
 deps/setup-steam-runtime
 deps/clone-proton
+# HACK: Remove me when this gets fixed.
+deps/ld-gold-workaround
 deps/build-proton
