@@ -2,5 +2,17 @@
 
 set -eu
 
-./configure.sh --no-steam-runtime
-make -j$(nproc)
+if [ ! -d "broton_build" ]
+then
+  echo "✗ - Configure"
+  mkdir broton_build
+  pushd broton_build
+    ../configure.sh --no-steam-runtime
+  popd
+fi
+echo "✓ - Configure"
+
+pushd broton_build
+  make
+popd
+echo "✓ - Make"
